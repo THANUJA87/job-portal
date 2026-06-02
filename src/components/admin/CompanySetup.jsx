@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../Header';
+import PageLayout from '../layout/PageLayout';
 import { Button } from '../ui/button';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { Label } from '../ui/label';
@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getCompanyByIdAPI, upadteCompanyAPI } from '@/services/allApi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSingleCompany } from '@/redux/companySlice';
+import StatusBanner from '../ui/StatusBanner';
 
 const CompanySetup = () => {
     const { singleCompany } = useSelector((store) => store.company);
@@ -15,6 +16,7 @@ const CompanySetup = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [feedback, setFeedback] = useState({ message: '', type: 'success' });
     
     const [input, setInput] = useState({
         name: "",
@@ -71,7 +73,7 @@ const CompanySetup = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         const reqBody = new FormData();
-        reqBody.append("name", input.name);
+        reqBody.append("companyName", input.name);
         reqBody.append("description", input.description);
         reqBody.append("website", input.website);
         reqBody.append("location", input.location);
@@ -84,23 +86,30 @@ const CompanySetup = () => {
                 const reqHeaders = { "Authorization": `Bearer ${token}` };
                 const res = await upadteCompanyAPI(reqBody, reqHeaders, id);
                 if (res.status === 200) {
-                    alert("Updated successfully");
-                    navigate("/admin/companies");
+                    setFeedback({ message: 'Company updated successfully', type: 'success' });
+                    setTimeout(() => navigate('/admin/companies'), 800);
+                } else {
+                    setFeedback({ message: 'Update failed. Please try again.', type: 'error' });
                 }
             } catch (error) {
                 console.error("Update error:", error);
+                setFeedback({ message: 'Something went wrong. Please try again.', type: 'error' });
             } finally {
                 setLoading(false);
             }
         } else {
-            alert("Not authorized");
+            setFeedback({ message: 'Not authorized. Please log in again.', type: 'error' });
         }
     };
 
     return (
-        <div>
-            <Header />
-            <div className='max-w-xl mx-auto my-10'>
+        <PageLayout>
+            <div className='page-container max-w-xl py-10'>
+                <StatusBanner
+                    message={feedback.message}
+                    type={feedback.type}
+                    onClose={() => setFeedback({ message: '', type: 'success' })}
+                />
                 <form onSubmit={submitHandler}>
                     <div className='flex items-center gap-5 p-8'>
                         <Button onClick={() => navigate("/admin/companies")} variant="outline" className="flex items-center gap-2 text-gray-500 font-semibold">
@@ -140,7 +149,7 @@ const CompanySetup = () => {
                     )}
                 </form>
             </div>
-        </div>
+        </PageLayout>
     );
 };
 

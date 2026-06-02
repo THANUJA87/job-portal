@@ -10,19 +10,14 @@ const useGetAllJobs = () => {
         const fetchAllJobs = async () => {
 
             const token = sessionStorage.getItem('token')
-            if(token){
-                const reqHeader ={
-                    "Authorization": `Bearer ${token}`
+            const reqHeader = token ? { Authorization: `Bearer ${token}` } : {}
+            try {
+                const res = await getjobAPI(reqHeader)
+                if (res.status === 200) {
+                    dispatch(setAllJobs(res.data))
                 }
-                try {
-                    const res = await getjobAPI(reqHeader)
-                    console.log(res.data);
-                    if(res.status == 200){
-                        dispatch(setAllJobs(res.data));
-                    }
-                } catch (error) {
-                    console.log(error);
-                }
+            } catch (error) {
+                console.error(error)
             }
         }
         fetchAllJobs();

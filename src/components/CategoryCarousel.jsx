@@ -1,34 +1,40 @@
-import React from 'react'
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
-import { Button } from './ui/button';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel'
+import { Badge } from './ui/badge'
+import { useDispatch } from 'react-redux'
+import { setSearchedQuery } from '@/redux/jobSlice'
 
 const category = [
-  "Frontend Developer",
-  "Backend Developer",
-  "Data Science",
-  "Graphic Designer",
-  "FullStack Developer"
+  'Frontend Developer',
+  'Backend Developer',
+  'Data Science',
+  'Graphic Designer',
+  'Full Stack Developer',
 ]
 
 const CategoryCarousel = () => {
-  
+  const dispatch = useDispatch()
+
   return (
-    <div>
-    <Carousel className="w-full max-w-xl mx-auto my-20">
+    <section className="page-container py-8">
+      <h2 className="mb-4 text-center text-lg font-semibold text-muted-foreground">Explore by role</h2>
+      <Carousel className="mx-auto w-full max-w-3xl">
         <CarouselContent>
-            {
-                category.map((cat, index) => (
-                    <CarouselItem className="md:basis-1/2 lg-basis-1/3">
-                        <Button  variant="outline" className="rounded-full">{cat}</Button>
-                    </CarouselItem>
-                ))
-            }
-             
+          {category.map((cat, index) => (
+            <CarouselItem key={index} className="basis-auto">
+              <Badge
+                variant="outline"
+                className="cursor-pointer px-4 py-2 text-sm hover:border-primary hover:bg-primary/5 hover:text-primary"
+                onClick={() => dispatch(setSearchedQuery(cat))}
+              >
+                {cat}
+              </Badge>
+            </CarouselItem>
+          ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
-    </Carousel>
-</div>
+      </Carousel>
+    </section>
   )
 }
 
