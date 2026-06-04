@@ -31,7 +31,7 @@ const Login = () => {
         dispatch(setUser(result.data.user))
         sessionStorage.setItem('user', JSON.stringify(result.data.user))
         sessionStorage.setItem('token', result.data.token)
-        const redirect = location.state?.from || (result.data.user.role === 'recruiter' ? '/admin/companies' : '/')
+        const redirect = location.state?.from || '/'
         navigate(redirect)
       } else {
         setError(result.response?.data || 'Login failed')

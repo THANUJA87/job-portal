@@ -3,6 +3,7 @@ import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar'
 import { Badge } from './ui/badge'
 import { Link } from 'react-router-dom'
 import ServerURL from '@/services/serverurl'
+import { formatSalary } from '@/lib/format'
 import { MapPin, Clock } from 'lucide-react'
 
 const Job = ({ job }) => {
@@ -41,7 +42,7 @@ const Job = ({ job }) => {
       <div className="mb-4 flex flex-wrap gap-2">
         <Badge variant="secondary">{job?.position}</Badge>
         <Badge variant="outline">{job?.jobType}</Badge>
-        <Badge className="bg-accent/10 text-accent hover:bg-accent/10">{job?.salary} LPA</Badge>
+        <Badge className="bg-accent/10 text-accent hover:bg-accent/10">{formatSalary(job?.salary)}</Badge>
       </div>
 
       <div className="flex gap-2">

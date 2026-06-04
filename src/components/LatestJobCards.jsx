@@ -1,6 +1,7 @@
 import { Badge } from './ui/badge'
 import { Link } from 'react-router-dom'
 import { MapPin } from 'lucide-react'
+import { formatSalary } from '@/lib/format'
 
 const LatestJobCards = ({ job }) => {
   return (
@@ -15,7 +16,7 @@ const LatestJobCards = ({ job }) => {
         <div className="mt-4 flex flex-wrap gap-2">
           <Badge variant="secondary">{job?.position}</Badge>
           <Badge variant="outline">{job?.jobType}</Badge>
-          <Badge className="bg-primary/10 text-primary hover:bg-primary/10">{job?.salary} LPA</Badge>
+          <Badge className="bg-primary/10 text-primary hover:bg-primary/10">{formatSalary(job?.salary)}</Badge>
         </div>
       </article>
     </Link>

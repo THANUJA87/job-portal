@@ -40,6 +40,7 @@ const Header = () => {
         <nav className="hidden items-center gap-6 md:flex">
           {user?.role === 'recruiter' && (
             <>
+              <Link className="text-sm font-medium text-muted-foreground hover:text-primary" to="/">Home</Link>
               <Link className="text-sm font-medium text-muted-foreground hover:text-primary" to="/admin/companies">
                 <span className="flex items-center gap-1.5"><Building2 className="h-4 w-4" /> Companies</span>
               </Link>

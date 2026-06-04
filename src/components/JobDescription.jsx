@@ -13,6 +13,7 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { setSingleJob } from '@/redux/jobSlice'
 import { Bookmark, BookmarkCheck, Briefcase, CheckCircle2, Loader2, MapPin, IndianRupee } from 'lucide-react'
+import { formatSalary } from '@/lib/format'
 
 const JobDescription = () => {
   const [isApplied, setIsApplied] = useState(false)
@@ -119,7 +120,7 @@ const JobDescription = () => {
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Badge variant="secondary" className="gap-1"><Briefcase className="h-3 w-3" />{singleJob?.position}</Badge>
                   <Badge variant="outline">{singleJob?.jobType}</Badge>
-                  <Badge className="gap-1 bg-primary/10 text-primary"><IndianRupee className="h-3 w-3" />{singleJob?.salary} LPA</Badge>
+                  <Badge className="gap-1 bg-primary/10 text-primary"><IndianRupee className="h-3 w-3" />{formatSalary(singleJob?.salary)}</Badge>
                   <Badge variant="outline" className="gap-1"><MapPin className="h-3 w-3" />{singleJob?.location}</Badge>
                 </div>
               </div>
@@ -172,7 +173,7 @@ const JobDescription = () => {
               </div>
               <div className="rounded-xl bg-muted/50 p-4">
                 <p className="text-xs text-muted-foreground">Salary</p>
-                <p className="font-semibold">{singleJob?.salary} LPA</p>
+                <p className="font-semibold">{formatSalary(singleJob?.salary)}</p>
               </div>
               <div className="rounded-xl bg-muted/50 p-4">
                 <p className="text-xs text-muted-foreground">Posted</p>
