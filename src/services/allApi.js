@@ -59,12 +59,36 @@ export const deletejobAPI = async (id,reqHeader) =>{
     return await commonApi("DELETE",`${ServerURL}/jobs/${id}/remove`,{},reqHeader)
 }
 
-export const saveJobAPI = async (reqBody,reqHeaders,id) =>{
-    return await commonApi("POST",`${ServerURL}/${id}/save`,reqBody,reqHeaders)
+export const applyJobAPI = async (id, reqHeader) => {
+    return await commonApi("POST", `${ServerURL}/jobs/${id}/apply`, {}, reqHeader)
 }
 
-export const getSavejobAPI = async (reqHeader) =>{
-    return await commonApi("GET",`${ServerURL}/jobs/savejobs`,{},reqHeader)
+export const getMyApplicationsAPI = async (reqHeader) => {
+    return await commonApi("GET", `${ServerURL}/applications/my`, {}, reqHeader)
+}
+
+export const checkApplicationStatusAPI = async (id, reqHeader) => {
+    return await commonApi("GET", `${ServerURL}/jobs/${id}/application-status`, {}, reqHeader)
+}
+
+export const getRecruiterApplicationsAPI = async (reqHeader) => {
+    return await commonApi("GET", `${ServerURL}/applications/recruiter`, {}, reqHeader)
+}
+
+export const updateApplicationStatusAPI = async (id, status, reqHeader) => {
+    return await commonApi("PUT", `${ServerURL}/applications/${id}/status`, { status }, reqHeader)
+}
+
+export const saveJobAPI = async (id, reqHeader) => {
+    return await commonApi("POST", `${ServerURL}/jobs/${id}/save`, {}, reqHeader)
+}
+
+export const getSavejobAPI = async (reqHeader) => {
+    return await commonApi("GET", `${ServerURL}/jobs/saved`, {}, reqHeader)
+}
+
+export const unsaveJobAPI = async (id, reqHeader) => {
+    return await commonApi("DELETE", `${ServerURL}/jobs/${id}/save`, {}, reqHeader)
 }
 
 export const updateUserAPI = async (reqBody,reqHeader) =>{

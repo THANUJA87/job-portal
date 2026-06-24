@@ -1,3 +1,3 @@
-const ServerURL = "https://job-portal-server-2wfa.onrender.com"
+const ServerURL = import.meta.env.VITE_API_URL || "http://localhost:3000"
 
 export default ServerURL

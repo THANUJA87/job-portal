@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Header from '../Header'
+import PageLayout from '../layout/PageLayout'
 import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
@@ -8,9 +8,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { useNavigate } from 'react-router-dom'
 import { postJobAPI } from '@/services/allApi'
 import { useSelector } from 'react-redux'
+import StatusBanner from '../ui/StatusBanner'
 
-
-const companyArray = [];
 const PostJob = () => {
 
     
@@ -30,6 +29,7 @@ const PostJob = () => {
 
     const { companies } = useSelector(store => store.company);
     const [loading, setLoading]= useState(false);
+    const [feedback, setFeedback] = useState({ message: '', type: 'success' });
     const navigate = useNavigate();
     
 
@@ -55,8 +55,10 @@ const PostJob = () => {
                     const res = await postJobAPI(input,reqHeader)
 
                     if(res.status == 200){
-                        console.log(res.data);
-                        navigate("/admin/jobs");
+                        setFeedback({ message: 'Job posted successfully', type: 'success' });
+                        setTimeout(() => navigate('/admin/jobs'), 800);
+                    } else {
+                        setFeedback({ message: 'Failed to post job. Please try again.', type: 'error' });
                     }
                 } catch (error) {
                     console.log(error);
@@ -66,7 +68,7 @@ const PostJob = () => {
                 }
              }
         }else{
-            alert("please fill the form completely !!")
+            setFeedback({ message: 'Please fill in all fields', type: 'error' });
         }
        
      
@@ -77,10 +79,14 @@ const PostJob = () => {
 
    
   return (
-    <div>
-    <Header />
-    <div className='flex items-center justify-center w-screen my-5'>
-        <form onSubmit={submitHandler} className='p-8 max-w-4xl border border-gray-200 shadow-lg rounded-md'>
+    <PageLayout>
+    <div className='page-container flex flex-1 flex-col items-center justify-center py-10'>
+        <StatusBanner
+          message={feedback.message}
+          type={feedback.type}
+          onClose={() => setFeedback({ message: '', type: 'success' })}
+        />
+        <form onSubmit={submitHandler} className='glass-card w-full max-w-4xl p-8'>
             <div className='grid grid-cols-2 gap-2'>
                 <div>
                     <Label>Title</Label>
@@ -192,7 +198,7 @@ const PostJob = () => {
             }
         </form>
     </div>
-</div>
+    </PageLayout>
   )
 }
 

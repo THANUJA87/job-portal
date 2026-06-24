@@ -1,59 +1,59 @@
-import React from 'react'
 import { Button } from './ui/button'
-import { Avatar, AvatarImage } from './ui/avatar'
+import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar'
 import { Badge } from './ui/badge'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import ServerURL from '@/services/serverurl'
+import { formatSalary } from '@/lib/format'
+import { MapPin, Clock } from 'lucide-react'
 
+const Job = ({ job }) => {
+  const daysAgo = (mongodbTime) => {
+    const createdAt = new Date(mongodbTime)
+    const diff = Math.floor((Date.now() - createdAt) / (1000 * 60 * 60 * 24))
+    return diff === 0 ? 'Today' : `${diff}d ago`
+  }
 
-const Job = ({job}) => {
+  const logo = job?.company?.logo
+    ? `${ServerURL}/uploads/${job.company.logo}`
+    : `https://api.dicebear.com/7.x/initials/svg?seed=${job?.company?.companyName || 'Co'}`
 
-   
+  return (
+    <article className="glass-card group flex h-full flex-col p-5 transition hover:-translate-y-0.5 hover:shadow-xl">
+      <div className="mb-3 flex items-center justify-between text-xs text-muted-foreground">
+        <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{daysAgo(job?.createdAt)}</span>
+      </div>
 
-    const daysAgefunction = (mongodbTime)=>{
-        const createdAt = new Date(mongodbTime)
-        const currentTime = new Date()
-        const timeDifference = currentTime-createdAt
-        return Math.floor(timeDifference/(1000*24*60*60))
-    }
-    return (
-        <div className='p-5 rounded-md shadow-xl bg-white border border-gray-100'>
-            <div className="flex items-center justify-between">
-                <p className='text-sm text-gray-500'>{daysAgefunction(job?.createdAt) == 0 ? "Today" : `${daysAgefunction(job?.createdAt)} days ago`}</p>
-            </div>
-
-            <div className='flex items-center gap-2 my-2'>
-                    <Button className="p-6" variant="outline" size="icon">
-                        <Avatar>
-                            <AvatarImage src={`${ServerURL}/uploads/${job?.company?.logo}`}></AvatarImage>
-                        </Avatar>
-                    </Button>
-                    <div>
-                    <h1 className='font-medium text-lg'>{job?.company?.companyName}</h1>
-                    <p className='text-sm text-gray-500'>{job?.company?.location}</p>
-                </div>
-
-            </div>
-            <div>
-                <h1 className='font-bold text-lg my-2'>{job?.title}</h1>
-                <p>{job?.description}</p>
-                
-            </div>
-            <div className='flex items-center gap-2 mt-4'>
-                <Badge className={'text-blue-700 font-bold'} variant="ghost">{job?.position}</Badge>
-                <Badge className={'text-[#F83002] font-bold'} variant="ghost">{job?.jobType}</Badge>
-                <Badge className={'text-[#7209b7] font-bold'} variant="ghost">{job?.salary }LPA</Badge>
-            </div>
-            <div className='flex items-center gap-20 mt-4'>
-                <Button  variant="outline"><Link to={`/description/${job?._id}`}>Details</Link></Button>
-                <Button  variant="outline" className="text-[#7209b7]">Apply</Button>
-            </div>
-
-
+      <div className="mb-4 flex items-center gap-3">
+        <Avatar className="h-11 w-11">
+          <AvatarImage src={logo} alt={job?.company?.companyName} />
+          <AvatarFallback>{job?.company?.companyName?.[0]}</AvatarFallback>
+        </Avatar>
+        <div>
+          <h2 className="font-semibold leading-tight">{job?.company?.companyName || 'Company'}</h2>
+          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+            <MapPin className="h-3 w-3" />{job?.location}
+          </p>
         </div>
+      </div>
 
-        
-  
+      <h3 className="mb-2 text-lg font-bold group-hover:text-primary">{job?.title}</h3>
+      <p className="mb-4 line-clamp-2 flex-1 text-sm text-muted-foreground">{job?.description}</p>
+
+      <div className="mb-4 flex flex-wrap gap-2">
+        <Badge variant="secondary">{job?.position}</Badge>
+        <Badge variant="outline">{job?.jobType}</Badge>
+        <Badge className="bg-accent/10 text-accent hover:bg-accent/10">{formatSalary(job?.salary)}</Badge>
+      </div>
+
+      <div className="flex gap-2">
+        <Link to={`/description/${job?._id}`} className="flex-1">
+          <Button variant="outline" className="w-full">View Details</Button>
+        </Link>
+        <Link to={`/description/${job?._id}`} className="flex-1">
+          <Button className="w-full">Apply</Button>
+        </Link>
+      </div>
+    </article>
   )
 }
 
