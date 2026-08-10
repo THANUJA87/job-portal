@@ -1,7 +1,7 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel'
 import { Badge } from './ui/badge'
 import { useDispatch } from 'react-redux'
-import { setSearchedQuery } from '@/redux/jobSlice'
+import { setRole } from '@/redux/jobSlice'
 
 const category = [
   'Frontend Developer',
@@ -24,7 +24,7 @@ const CategoryCarousel = () => {
               <Badge
                 variant="outline"
                 className="cursor-pointer px-4 py-2 text-sm hover:border-primary hover:bg-primary/5 hover:text-primary"
-                onClick={() => dispatch(setSearchedQuery(cat))}
+                onClick={() => dispatch(setRole(cat))}
               >
                 {cat}
               </Badge>

@@ -4,7 +4,6 @@ import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  applyJobAPI,
   checkApplicationStatusAPI,
   getSingleJobAPI,
   saveJobAPI,
@@ -14,12 +13,14 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { setSingleJob } from '@/redux/jobSlice'
 import { Bookmark, BookmarkCheck, Briefcase, CheckCircle2, Loader2, MapPin, IndianRupee } from 'lucide-react'
 import { formatSalary } from '@/lib/format'
+import ApplyJobDialog from './ApplyJobDialog'
 
 const JobDescription = () => {
   const [isApplied, setIsApplied] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [applyDialogOpen, setApplyDialogOpen] = useState(false)
 
   const params = useParams()
   const { singleJob } = useSelector((store) => store.job)
@@ -64,26 +65,27 @@ const JobDescription = () => {
     navigate('/login', { state: { from: `/description/${jobId}` } })
   }
 
-  const handleApply = async () => {
+  const handleApply = () => {
     if (!user) return requireAuth()
     if (user.role !== 'student') {
       setMessage('Only job seekers can apply to jobs')
       return
     }
-    setLoading(true)
-    setMessage('')
+    setApplyDialogOpen(true)
+  }
+
+  const handleApplySuccess = async () => {
+    setIsApplied(true)
+    setMessage('Application submitted successfully!')
+  
     try {
-      const res = await applyJobAPI(jobId, reqHeader)
-      if (res.status === 201 || res.status === 200) {
-        setIsApplied(true)
-        setMessage('Application submitted successfully!')
-      } else {
-        setMessage(res.response?.data?.message || res.response?.data || 'Could not apply')
-      }
-    } catch {
-      setMessage('Failed to submit application')
-    } finally {
-      setLoading(false)
+      console.log("Calling unsave", jobId)
+  
+      const res = await unsaveJobAPI(jobId, reqHeader)
+  
+      console.log(res)
+    } catch (error) {
+      console.error(error)
     }
   }
 
@@ -126,11 +128,27 @@ const JobDescription = () => {
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
                 {user?.role === 'student' && (
-                  <Button variant="outline" onClick={handleSave} disabled={loading}>
-                    {isSaved ? <><BookmarkCheck className="mr-2 h-4 w-4" /> Saved</> : <><Bookmark className="mr-2 h-4 w-4" /> Save Job</>}
-                  </Button>
+                  <Button
+                  type="button"
+                  variant={isSaved ? 'secondary' : 'outline'}
+                  onClick={handleSave}
+                  disabled={loading || isApplied}
+                >
+                  {isSaved ? (
+                    <>
+                      <BookmarkCheck className="mr-2 h-4 w-4" />
+                      Saved
+                    </>
+                  ) : (
+                    <>
+                      <Bookmark className="mr-2 h-4 w-4" />
+                      Save Job
+                    </>
+                  )}
+                </Button>
                 )}
                 <Button
+                  type="button"
                   onClick={handleApply}
                   disabled={isApplied || loading}
                   className="min-w-[140px]"
@@ -189,6 +207,15 @@ const JobDescription = () => {
           </div>
         </div>
       </div>
+
+      <ApplyJobDialog
+        open={applyDialogOpen}
+        setOpen={setApplyDialogOpen}
+        jobId={jobId}
+        jobTitle={singleJob?.title}
+        user={user}
+        onSuccess={handleApplySuccess}
+      />
     </PageLayout>
   )
 }
