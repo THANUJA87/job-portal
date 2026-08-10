@@ -59,8 +59,8 @@ export const deletejobAPI = async (id,reqHeader) =>{
     return await commonApi("DELETE",`${ServerURL}/jobs/${id}/remove`,{},reqHeader)
 }
 
-export const applyJobAPI = async (id, reqHeader) => {
-    return await commonApi("POST", `${ServerURL}/jobs/${id}/apply`, {}, reqHeader)
+export const applyJobAPI = async (id, reqBody, reqHeader) => {
+    return await commonApi("POST", `${ServerURL}/jobs/${id}/apply`, reqBody, reqHeader)
 }
 
 export const getMyApplicationsAPI = async (reqHeader) => {

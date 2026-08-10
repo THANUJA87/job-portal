@@ -5,6 +5,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
 import StatusBanner from '../ui/StatusBanner'
 import { capitalizeStatus } from '@/lib/format'
+import ServerURL from '@/services/serverurl'
+import { ExternalLink } from 'lucide-react'
 
 const STATUSES = ['applied', 'reviewing', 'shortlisted', 'rejected', 'selected']
 
@@ -73,7 +75,9 @@ const RecruiterApplications = () => {
                 <TableRow>
                   <TableHead>Candidate</TableHead>
                   <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
                   <TableHead>Job</TableHead>
+                  <TableHead>Resume</TableHead>
                   <TableHead>Applied</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
@@ -81,9 +85,24 @@ const RecruiterApplications = () => {
               <TableBody>
                 {applications.map((app) => (
                   <TableRow key={app._id}>
-                    <TableCell className="font-medium">{app.applicant?.fullname}</TableCell>
-                    <TableCell>{app.applicant?.email}</TableCell>
+                    <TableCell className="font-medium">{app.fullname || app.applicant?.fullname}</TableCell>
+                    <TableCell>{app.email || app.applicant?.email}</TableCell>
+                    <TableCell>{app.phoneNumber || app.applicant?.phoneNumber}</TableCell>
                     <TableCell>{app.job?.title}</TableCell>
+                    <TableCell>
+                      {app.resume ? (
+                        <a
+                          href={`${ServerURL}${app.resume}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+                        >
+                          View <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : (
+                        '—'
+                      )}
+                    </TableCell>
                     <TableCell>{new Date(app.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Select value={app.status} onValueChange={(v) => updateStatus(app._id, v)}>
